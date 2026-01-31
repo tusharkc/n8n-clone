@@ -1,10 +1,8 @@
-"use client";
+import { requireAuth } from "@/lib/auth-utils";
 
-import { authClient } from "@/lib/auth-client";
-const page = () => {
-  const { data } = authClient.useSession();
-
-  return <div>{JSON.stringify(data)}</div>;
+const page = async () => {
+  await requireAuth();
+  return <div>Hello</div>;
 };
 
 export default page;
