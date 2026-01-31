@@ -1,4 +1,5 @@
 "use client";
+import { useHasActiveSubscription } from "@/app/features/subscriptions/hooks/use-subscriptions";
 import {
   Sidebar,
   SidebarContent,
@@ -43,6 +44,7 @@ const items = [
 const AppSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
   return (
     <Sidebar>
@@ -84,17 +86,34 @@ const AppSidebar = () => {
 
       <SidebarFooter>
         <SidebarMenu>
+          {!hasActiveSubscription && !isLoading && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={async () => {
+                  await (authClient as any).checkout({
+                    slug: "n8n-clone-pro",
+                  });
+                }}
+                asChild
+                className="gap-x-4 h-10 px-4"
+              >
+                <Link href="#">
+                  <StarIcon className="size-4" />
+                  <span>Upgrade to Pro</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
+
           <SidebarMenuItem>
-            <SidebarMenuButton asChild className="gap-x-4 h-10 px-4">
-              <Link href="/">
-                <StarIcon className="size-4" />
-                <span>Upgrade to Pro</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild className="gap-x-4 h-10 px-4">
-              <Link href="/">
+            <SidebarMenuButton
+              onClick={async () => {
+                await (authClient as any).customer.portal();
+              }}
+              asChild
+              className="gap-x-4 h-10 px-4"
+            >
+              <Link href="#">
                 <CreditCardIcon className="size-4" />
                 <span>Billing Portal</span>
               </Link>
