@@ -26,3 +26,19 @@ export const useCreateWorkflow = () => {
 
   return mutation;
 };
+
+export const useDeleteWorkflow = () => {
+  const utils = trpc.useUtils();
+
+  const mutation = trpc.workflows.remove.useMutation({
+    onSuccess: (data) => {
+      toast.success(`${data.name} deleted successfully`);
+      utils.workflows.getMany.invalidate();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  return mutation;
+};
