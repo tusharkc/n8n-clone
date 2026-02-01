@@ -45,6 +45,8 @@ export const premiumProcedure = baseProcedure.use(async ({ ctx, next }) => {
     headers: await headers(),
   });
 
+  console.log("session[premiumProcedure]", session);
+
   if (!session) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
@@ -52,7 +54,7 @@ export const premiumProcedure = baseProcedure.use(async ({ ctx, next }) => {
     });
   }
   const customer = await polarClient.customers.getStateExternal({
-    externalId: ctx.auth.user.id,
+    externalId: session.user.id,
   });
 
   if (!customer.activeSubscriptions.length) {
