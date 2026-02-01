@@ -1,11 +1,33 @@
 "use client";
-import EntityHeader, { EntityContainer } from "@/components/entity-components";
+import EntityHeader, {
+  EntityContainer,
+  EntityPagination,
+  EntitySearch,
+} from "@/components/entity-components";
+import { useEntitySearch } from "@/hooks/use-entity-search";
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
 import { useRouter } from "next/navigation";
+import { useWorkflowParams } from "../hooks/use-workflow-params";
 import {
   useCreateWorkflow,
   useSuspenseWorkflows,
 } from "../hooks/use-workflows";
+
+export const WorkflowSearch = () => {
+  const [params, setParams] = useWorkflowParams();
+  const { searchValue, onSearchChange } = useEntitySearch({
+    params,
+    setParams,
+  });
+
+  return (
+    <EntitySearch
+      value={searchValue}
+      onChange={onSearchChange}
+      placeholder="Search workflows"
+    />
+  );
+};
 
 const WorkflowsList = () => {
   const { data: workflows } = useSuspenseWorkflows();
@@ -13,6 +35,19 @@ const WorkflowsList = () => {
     <div className="flex flex-col gap-y-4">
       {JSON.stringify(workflows, null, 2)}
     </div>
+  );
+};
+
+export const WorkflowPagination = () => {
+  const { data } = useSuspenseWorkflows();
+  const [params, setParams] = useWorkflowParams();
+
+  return (
+    <EntityPagination
+      page={data.page}
+      totalPages={data.totalPages}
+      onPageChange={(page) => setParams({ page })}
+    />
   );
 };
 
@@ -57,8 +92,8 @@ export const WorkflowContainer = ({
     <>
       <EntityContainer
         header={<WorkflowsHeader />}
-        search={<></>}
-        pagination={<></>}
+        search={<WorkflowSearch />}
+        pagination={<WorkflowPagination />}
       >
         {children}
       </EntityContainer>
