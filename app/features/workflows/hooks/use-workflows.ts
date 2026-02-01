@@ -1,9 +1,11 @@
 "use client";
 import { trpc } from "@/trpc/client";
 import { toast } from "sonner";
+import { useWorkflowParams } from "./use-workflow-params";
 
 export const useSuspenseWorkflows = () => {
-  const [data] = trpc.workflows.getMany.useSuspenseQuery(undefined, {
+  const [params] = useWorkflowParams();
+  const [data] = trpc.workflows.getMany.useSuspenseQuery(params, {
     refetchOnMount: false,
   });
   return { data };
